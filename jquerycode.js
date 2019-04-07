@@ -51,11 +51,13 @@ $(function() {
             $(this).addClass("ui-state-default");
             $( this ).text(" ");
             $( this ).append(" Arm");
+            part[$(this).attr("value")].armed=false;
             
         }else{
             $(this).addClass("ui-state-active");
             $( this ).text(" ");
             $( this ).append(" Disarm");
+            part[$(this).attr("value")].armed=true;
         }      
     });
     

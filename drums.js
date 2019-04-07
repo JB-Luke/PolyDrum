@@ -26,18 +26,19 @@ sound[5] = new Howl({ src: ['sounds/tom2.wav'] });
 
 sound[10] = new Howl({ src: ['sounds/click.wav'] });
 
-function kitpart(name, reference, array, index, timebin, sound) {
+function kitpart(name, reference, array, index, timebin, sound, armed) {
     this.partName   = name;
     this.reference  = reference;
     this.array      = {};
     this.index      = index;
     this.time       = timebin;
     this.sound      = sound;
+    this.armed      = armed;
 }
 
 function channelGen(){    
     for (var i=0; i<6; i++){
-        part[i+1] = new kitpart(names[i],i+1,new Array(),0,timeBins[i+1],sound[i]);
+        part[i+1] = new kitpart(names[i],i+1,new Array(),0,timeBins[i+1],sound[i],false);
     }
 }
 
@@ -50,14 +51,24 @@ function updateTimes(){
 function resetArray(reference){
     if (reference==0){
         for (var i = 0; i < 6; i++){
-            part[i+1].array = new Array(size[i+1]);
+            part[i+1].array = new Array(size[i+1]).fill(0);
         }
     }else{
-        part[reference].array = new Array(size[reference]);
+        part[reference].array = new Array(size[reference]).fill(0);
     }
 }
 
 function playloop(part,click) {
+    
+    if (part.index < part.array.length-2){
+        part.index += 1;
+        pause[part.reference] = setTimeout(function(){playloop(part,click);},part.time);
+    }else{
+        part.index += 1;
+    }
+    
+//    console.log(part.index);
+    
     // related to array bins
     if ( part.array[part.index]==true ){
         putActive(part.index,part.reference);
@@ -73,13 +84,8 @@ function playloop(part,click) {
             sound[10].play();
         }
     }
-
-    if (part.index < part.array.length-1){
-        part.index += 1;
-        pause[part.reference] = setTimeout(function(){playloop(part,click);},part.time);
-    }else{
-        part.index = 0;
-    }
+    
+    
 };
 
 
@@ -89,8 +95,10 @@ function mainPlay(){
     
     for (i=1; i<7; i++){
         if (i==bpmChecked){
+            part[i].index=-1;
             playloop(part[i],true);
         }else{
+            part[i].index=-1;
             playloop(part[i],false);
         }
     }

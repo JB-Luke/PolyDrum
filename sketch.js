@@ -96,10 +96,9 @@ microBit.onBleNotify( function(){
     gate_trig+=1;
     
     if (varx<=-4 && gate_trig>15){
-        //console.log("reached");
+//        console.log("reached");
         gate_trig=0;
-        kicksound.play();
-        //console.log(varx);
+        input_bin();
     }
 })
 
@@ -130,6 +129,27 @@ function getSlope(sample){
     }
 };
 
+function input_bin(){
+    for (var i=1; i<7; i++){
+        if (part[i].armed==true){
+            part[i].sound.volume(volume[part[i].reference]);
+            part[i].sound.play();
+            if (running==true){
+                if (part[i].array[part[i].index]==0){
+                    part[i].array[part[i].index]=1;
+                    var table = document.getElementById("pattern-"+i);
+                    $(table.rows[0].cells[part[i].index]).addClass("armed");
+                }
+            }
+        }
+    }
+}
+
+function record_bin(){
+    
+//        part[1].array[part[1].index-1]=1;
+}
+
 function readAccPeriod(){
     //try-catch to deal with "standard" errors
     try {
@@ -140,7 +160,6 @@ function readAccPeriod(){
             accel_period=microBit.getAccelerometer_period();
             document.getElementById("acc-per").innerHTML=accel_period+" ms";
         }else{
-            console.log("no");
             document.getElementById("acc-per").innerHTML="null";
         }
     }
@@ -155,14 +174,7 @@ function setAccPeriod(){
     setTimeout(readAccPeriod,500);
 }
 
-function data(){
-    setTimeout(read,10);
-};
-
 function read(){
-    
-//    period=microBit.getAccelerometer_period();
-//    console.log(period);
     
     pitch = ((Math.atan2( -filtereday,-filteredaz ) ) * 180 / 3.14).toFixed(2);
     roll  = ((Math.atan2(filteredax, Math.sqrt( ( filtereday*filtereday ) + (filteredaz*filteredaz)))) * 180 / 3.14 ).toFixed(2);
@@ -176,62 +188,7 @@ function read(){
 //    document.getElementById("t").innerHTML=t;
     document.getElementById("varx").innerHTML=varx;
     
-    tempo = Number(document.getElementById("bpm").value);
-    
-    {
-//    switch ( gateks ) {
-//        case 1 :     
-//            if ( filteredaz > treshk )  
-//            { onkick = 1;  
-//             onsnare = 0 ;  
-//            }
-//            else if ( filteredax > treshs )  
-//            { onsnare = 1; 
-//             onkick = 0;
-//            }
-//            else { onsnare = 0; 
-//                 onkick = 0;  }
-//            break ;
-//        case 0 :  
-//            onkick = 0;
-//            onsnare = 0 ; 
-//            break ;
-//    }
-//    
-//    switch ( gatetoms ) {
-//        case 1 : 
-//             if (roll < -30){ tomon = 1; }
-//             else if (roll > 30) { tomon = 2; }
-//             else { tomon = 0 ; }
-//             break ;
-//        case 0 : 
-//            tomon = 0; 
-//            break ;
-//    }
-//    
-//    switch ( gatehats ) {
-//        case 1 : 
-//            if (filteredaz > 0.8 ) { 
-//                switch (true) {
-//                    case pitch<0 :
-//                         haton = 1;
-//                         //console.log('closed');
-//                     break;
-//                    case pitch >0 :
-//                         //console.log('open');
-//                         haton = 2 ;
-//                    break;
-//                }  
-//            } 
-//            else { haton = 0 }
-//             break ;
-//        case 0 : 
-//            { haton = 0 ; }
-//            break ;
-//    }
-//    
-    }
-    
+    //enable data reading from user interface (check jquerycode.js)
     if(read_active){
         setTimeout(read,Ts);
     }
