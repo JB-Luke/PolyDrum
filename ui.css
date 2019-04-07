@@ -1,0 +1,67 @@
+.slidev{
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.slider{
+    display: inline-block;
+    width: 200px;
+    vertical-align: middle;    
+}
+
+.sliderVol{
+    display: inline-block;
+    width: 120px;
+    vertical-align: middle;    
+}
+
+legend {
+    font-size: 14px;
+/*    font-weight: bold;*/
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.upperspace{
+    margin-top: 13px;
+}
+
+.timesig{
+    display: block;
+}
+
+.startstop{
+    
+}
+
+.periodbutt{
+    font-size: 14px;
+    display: inline-block;
+    padding: 5px
+}
+
+#searchButton{
+    display: inline-block;
+}
+
+.resetButton {
+    
+}
+
+.rightal{
+    float: right;			
+}
+
+.checkbox2{
+    text-align: center;
+/*    margin: -5px 5px 0 5px;*/
+}
+
+.bpmref{
+/*    margin: -5px 5px 0 5px;*/
+}

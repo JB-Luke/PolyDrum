@@ -1,0 +1,160 @@
+body{
+    height: auto;
+}
+
+.main{
+    width: 90%;
+    border: 1px solid black;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    height: inherit;
+}
+
+h1 {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.hmic{
+    display: block;
+    height: 35px;
+    width: 100%;
+}
+
+.parts{
+    display: flex;
+    width: auto;
+    justify-content: space-between;
+}
+
+.parts:after {
+   content: none;
+}
+
+.parts:before {
+   content: none;
+}
+
+.part-box{
+    width:10%;
+    display: inline-block;
+}
+
+#part-lab{
+    float: none;
+    display: block;
+/*    width: inherit;*/
+    
+    margin: auto;
+    text-align: center;
+}
+
+.controlbox{
+    position: relative;
+    width: 25%;
+    padding: 15px;
+    display: inline-block;
+    border: black;
+}
+
+.controlbox.microinfo{
+    float: right;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    overflow: auto;
+    height: 255px;
+}
+
+.controlbox.master{
+    width: 450px;
+    height: auto;
+    margin-left: 30px;
+    margin-bottom: 30px;
+}
+
+.box{
+    display: inline-block;
+/*    border: 1px solid white;*/
+    padding: 5px;
+    height: 120px;
+    width: auto;
+    vertical-align: middle;
+}
+
+.searchbox{
+    padding-top: 10px;
+    padding-bottom: 5px;
+    align-items: stretch;
+}
+
+.block1{
+    display: inline-block;
+    width: auto;
+    position: relative;
+}
+
+.infolab{
+    display: inline-block;
+    width: 150px;
+    float: right;
+}
+
+.maxwidth{
+    width: 100%;
+}
+.maxheight{
+    height: 100%;
+}
+
+.flex{
+    display: inline-flex;
+}
+
+.flex.column{
+    flex-direction: column;
+}
+
+.flex.row{
+    flex-direction: row;
+}
+
+.flex.center{
+    justify-content: center;
+    align-items: center;
+}
+
+.flex.spaced{
+    justify-content: space-between;
+}
+
+.flex.end-jus{
+    justify-content: flex-end;
+}
+
+.flex.end-align{
+    align-items: flex-end;
+}
+
+.flex.start-align{
+    align-items:flex-start;
+}
+
+#accordion{
+    width: 200px;
+}
+
+#fieldset1{
+    width: 280px;
+    padding: 10px;
+}
+
+#fieldset2{
+    padding: 5px;
+    width: 150;
+}
+
+#gest1{
+    
+}

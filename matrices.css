@@ -1,0 +1,51 @@
+/*NEW MATRICES PROPERTIES*/
+
+.pattern-matrix {
+    margin: 50px 0 50px 0;
+    border-spacing: 5px;
+    height: 100px;
+    table-layout : fixed;
+    width: 100%;
+    position: relative;
+}
+
+.Beat.notArmed{
+    border: 1px solid #c5c5c5;
+	background: #a0a0a0 url("theme-bckg-images/ui-bg_highlight-soft_30_a0a0a0_1x100.png") 50% 50% repeat-x;
+  }
+
+.Beat.notArmed.hover{
+    border: 1px solid #f2f2f2;
+	background: #e0e0e0 50% 50% repeat-x;
+  }
+
+.Beat.armed{
+    border: 1px solid #c1e4f0;
+    /*background: #59b4d4  90% 10% repeat-x;*/
+    background: #85c8e0  90% 10% repeat-x;
+  }
+
+.Beat.armed.hover{
+    border: 1px solid #d3f4ff;
+    background: #b3e7f9 50% 50% repeat-x;
+  }
+
+.subbeat.notArmed{
+    border: 1px solid #999999;
+	background: #555555 url("theme-bckg-images/ui-bg_highlight-soft_30_555555_1x100.png") 50% 50% repeat-x;
+}
+
+.subbeat.notArmed.hover{
+    border: 1px solid #a6a6a6;
+	background: #808080 50% 50% repeat-x;
+}
+
+.subbeat.armed {
+    border: 1px solid #ffbf80;
+    background: #ffa64d 50% 50% repeat-x;
+  }
+
+.subbeat.armed.hover {
+    border: 1px solid #ffe6cc;
+    background: #ffcc99 50% 50% repeat-x;
+  }

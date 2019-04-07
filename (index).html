@@ -1,0 +1,610 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+    
+    <!--JQUERY REFERENCES-->
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/ui-darkness/jquery-ui.css">
+    
+    <!--Howler audio plugin-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.js"></script>
+    
+    <!--live plotter-->
+    <script src="src/plotly.min.js"></script>
+    
+    <!--microbit-->
+    <script language="javascript" type="text/javascript" src="microBit.js"></script>
+    
+    <script language="javascript" type="text/javascript" src="math.js"></script>
+    
+    <!--DSP interpretation-->
+    <script language="javascript" type="text/javascript" src="sketch.js"></script>
+    
+    <!--visual user interface-->
+    <script language="javascript" type="text/javascript" src="jquerycode.js"></script>
+    
+    <!--graphics and structures-->
+    <script language="javascript" type="text/javascript" src="draw.js"></script>
+    
+    <!--main code and loopers-->
+    <script language="javascript" type="text/javascript" src="drums.js"></script>
+
+    <!-- css -->
+    <link rel="stylesheet" type="text/css" href="containers.css" />
+    <link rel="stylesheet" type="text/css" href="matrices.css" />
+    <link rel="stylesheet" type="text/css" href="ui.css" />
+</head>
+
+<body>
+    
+    <div class="main ui-widget-content">
+        
+        <h1 class="ui-widget-header"> POLYDRUM </h1>
+        
+<!--        MAIN CONTROLS BOX-->
+        <div class="controlbox master ui-widget-content">
+            <h2 class="ui-widget">Main controls</h2>
+            <div class="maxwidth flex row center spaced">
+                <fieldset class="flex column spaced end-align" id="fieldset1">
+                    <legend>Click options:</legend>
+                    <div class="maxwidth flex row spaced">
+                        <div class="slider" id="slider1"></div><div class="slidev" id=bpm></div>
+                    </div>
+                    <div class="maxwidth flex row spaced">
+                        <div class="slider" id="slider2"></div><div class="slidev" id=clickl></div>
+                    </div>
+                    <div class="maxwidth flex row center end-jus">
+                        <div  style="width: 85">Click sound:  </div><button id="clickon">Activate</button>
+                    </div>
+                       
+                </fieldset>
+                <button class="startstop"> 
+                <span class="ui-icon ui-icon-play"></span> Playback</button>
+            </div>
+            <br/><br/><br/>
+            <div class="">
+                <button class="edits" id="undo"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span> Undo</button>
+                <button class="edits" id="redo"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span> Redo</button>
+            </div>
+            
+        </div>
+        
+<!--        MICROBIT DEVICE manager-->
+        <div class="controlbox microinfo flex column start-align ui-widget-content ">
+            <h2 class="ui-widget hmic">microBit device</h2>
+            <div class="flex row start-align spaced maxwidth maxheight" style="align-items: stretch" >
+                <div class="searchbox flex column spaced">
+                    <button id="searchButton" onClick="searchDevice()">search device</button>
+                    <table class="ui-widget-content">
+                        <tr>
+                            <td>Connected :</td>
+                            <td id="connected"></td>
+                        </tr>
+                    </table>
+                    <fieldset id="fieldset2">
+                        <legend>Accelerometer period</legend>
+                        <div class="maxwidth flex row center spaced">
+                            <button class="periodbutt" onclick="readAccPeriod()" style="width: 42">read</button>
+                            <button class="periodbutt" onclick="setAccPeriod()" style="width: 42">set</button>
+                            <div style="width: 42" id="acc-per"></div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="box infolab" id="accordion">
+                    <h3 class="accordion-butt">Show info</h3> 
+                    <div class="flex center" style="padding:5px">
+                        <table class="ui-widget-content " style="width:180">
+                            <tr>
+                                <td>Yaw :</td>
+                                <td id="roll"></td>
+                            </tr>
+                            <tr>
+                                <td>Pitch:</td>
+                                <td id="pitch"></td>
+                            </tr>
+                            <tr>
+                                <td>Ax: </td>
+                                <td id="ax"></td>
+                            </tr>
+                            <tr>
+                                <td>Ay: </td>
+                                <td id="ay"></td>
+                            </tr>
+                            <tr>
+                                <td>Az: </td>
+                                <td id="az"></td>
+                            </tr>
+                            <tr>
+                                <td>Slope-x: </td>
+                                <td id="varx"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div> 
+        </div>
+        
+        <div style="clear: both;"></div> 
+        
+        <div id="tabs">
+            
+            <div id="fragment-1">
+                
+                <!--  Time signature melting type option-->
+                <div class="box flex column center">
+                    <fieldset class="checkbox1">
+                        <legend>Set time signatures melting type:</legend>
+                        <div class="melting" id="melt-1">
+                            <input type="radio" id="polyr-1" name="proj-1" checked="checked">
+                            <label for="polyr-1">Polyrythm</label>
+
+                            <input type="radio" id="polym-1" name="proj-1" >
+                            <label for="polym-1">Polymeter</label>
+                        </div>
+                    </fieldset>
+                </div> 
+                
+                <!--  time signature and minimum bin values-->
+                <div class="box flex column center spaced">
+                    <div class="">
+                        <label for="TS-1" >Time signature</label>
+                        <select class="timesig" id="TS-1">
+                        <option value="0" selected="selected">4/4</option>
+                        <option value="1">5/4</option>
+                        <option value="2">3/4</option>
+                        <option value="3">7/4</option>
+<!--                       <option value="4">7/8</option>-->
+                        </select>
+                    </div>
+                    <div class="">
+                        <label for="min-bin">Minimum note</label>
+                        <select class="timesig" id="min-bin-1">
+                            <option class="off-opt" value="0">1/32</option>
+                            <option value="1" selected="selected">1/16</option>
+                            <option value="2">1/8</option>
+                            <option class="off-opt" value="3">1/4</option>
+                        </select>
+                    </div>
+                </div> 
+                
+                <!--  gesture inputs and bin shifting-->
+                <div class="box flex column center spaced" style="width: 170">
+                    <div>
+                        <fieldset class="checkbox2">
+                            <legend class="font1">Gesture input</legend>
+                            <button class="gesture" id="armed-1">Arm</button>
+                        </fieldset>
+                    </div>
+                    <div class="maxwidth flex row center spaced">
+                        <div class="sliderVol" value="1"></div><div class="slidev" id="vol-1"></div>
+                    </div>
+                    
+                </div> 
+                
+                <!--  click assignment-->
+                <div class="box flex column center">
+                    <label for="bpm-ass-1">click assigned</label>
+                    <input type="radio" name="bpm" id="bpm-ass-1" >
+                </div> 
+                
+                <!--  edit options box-->
+                <div class="box rightal flex column center spaced end-align">
+                    <fieldset id="shift">
+                        <legend class="font1">Shift bins: </legend>
+                        <button class="shift" value="1" id="shiftl-1"><span class="ui-icon ui-icon-arrowthick-1-w"></span></button>
+                        <button class="shift" value="1" id="shiftr-1"><span class="ui-icon ui-icon-arrowthick-1-e"></span></button>
+                    </fieldset>
+                    <button class="resetButton rightal" id="resetButton-1"  value="1">reset</button>
+                </div>
+                
+                <!--  loop matrix -->
+                <table class="pattern-matrix" id="pattern-1"></table>
+                
+                <!-- NOT USED HERE. IT CLEARS THE FLOATS -->
+                <div style="clear: both;"></div> 
+                
+            </div>
+            <div id="fragment-2">
+                
+                <!--  Time signature melting type option-->
+                <div class="box flex column center">
+                    <fieldset class="checkbox1">
+                        <legend>Set time signatures melting type:</legend>
+                        <div class="melting" id="melt-2">
+                            <input type="radio" id="polyr-2" name="proj-2" checked="checked">
+                            <label for="polyr-2">Polyrythm</label>
+
+                            <input type="radio" id="polym-2" name="proj-2" >
+                            <label for="polym-2">Polymeter</label>
+                        </div>
+                    </fieldset>
+                </div> 
+                
+                <!--  time signature and minimum bin values-->
+                <div class="box flex column center spaced">
+                    <div class="">
+                        <label for="TS-2" >Time signature</label>
+                        <select class="timesig" id="TS-2">
+                        <option value="0" selected="selected">4/4</option>
+                        <option value="1">5/4</option>
+                        <option value="2">3/4</option>
+                        <option value="3">7/4</option>
+<!--                       <option value="4">7/8</option>-->
+                        </select>
+                    </div>
+                    <div class="">
+                        <label for="min-bin-2">Minimum note</label>
+                        <select class="timesig" id="min-bin-2">
+                            <option class="off-opt" value="0">1/32</option>
+                            <option value="1" selected="selected">1/16</option>
+                            <option value="2">1/8</option>
+                            <option class="off-opt" value="3">1/4</option>
+                        </select>
+                    </div>
+                </div> 
+                
+                <!--  gesture inputs and bin shifting-->
+                <div class="box flex column center spaced" style="width: 170">
+                    <div>
+                        <fieldset class="checkbox2">
+                            <legend class="font1">Gesture input</legend>
+                            <button class="gesture" id="armed-2">Arm</button>
+                        </fieldset>
+                    </div>
+                    <div class="maxwidth flex row center spaced">
+                        <div class="sliderVol" value="2"></div><div class="slidev" id="vol-2"></div>
+                    </div>
+                </div>
+                
+                <!--  click assignment-->
+                <div class="box flex column center">
+                    <label for="bpm-ass-2">click assigned</label>
+                    <input type="radio" name="bpm" id="bpm-ass-2">
+                </div> 
+                
+<!--                  edit options box-->
+                <div class="box rightal flex column center spaced end-align" id="shift">
+                    <fieldset id="shift">
+                        <legend class="font1">Shift bins: </legend>
+                        <button class="shift" value="2" id="shiftl-2"><span class="ui-icon ui-icon-arrowthick-1-w"></span></button>
+                        <button class="shift" value="2" id="shiftr-2"><span class="ui-icon ui-icon-arrowthick-1-e"></span></button>
+                    </fieldset>
+                    <button class="resetButton rightal" id="resetButton-2" value="2">reset</button>
+                </div>
+                
+                <table class="pattern-matrix" id="pattern-2"></table>
+            </div>
+            <div id="fragment-3">
+                                <!--  Time signature melting type option-->
+                <div class="box flex column center">
+                    <fieldset class="checkbox1">
+                        <legend>Set time signatures melting type:</legend>
+                        <div class="melting" id="melt-3">
+                            <input type="radio" id="polyr-3" name="proj-3" checked="checked">
+                            <label for="polyr-3">Polyrythm</label>
+
+                            <input type="radio" id="polym-3" name="proj-3" >
+                            <label for="polym-3">Polymeter</label>
+                        </div>
+                    </fieldset>
+                </div> 
+                
+                <!--  time signature and minimum bin values-->
+                <div class="box flex column center spaced">
+                    <div class="">
+                        <label for="TS-3" >Time signature</label>
+                        <select class="timesig" id="TS-3">
+                        <option value="0" selected="selected">4/4</option>
+                        <option value="1">5/4</option>
+                        <option value="2">3/4</option>
+                        <option value="3">7/4</option>
+<!--                       <option value="4">7/8</option>-->
+                        </select>
+                    </div>
+                    <div class="">
+                        <label for="min-bin-3">Minimum note</label>
+                        <select class="timesig" id="min-bin-3">
+                            <option class="off-opt" value="0">1/32</option>
+                            <option value="1" selected="selected">1/16</option>
+                            <option value="2">1/8</option>
+                            <option class="off-opt" value="3">1/4</option>
+                        </select>
+                    </div>
+                </div> 
+                
+                <!--  gesture inputs and bin shifting-->
+                <div class="box flex column center spaced" style="width: 170">
+                    <div>
+                        <fieldset class="checkbox2">
+                            <legend class="font1">Gesture input</legend>
+                            <button class="gesture" id="armed-3">Arm</button>
+                        </fieldset>
+                    </div>
+                    <div class="maxwidth flex row center spaced">
+                        <div class="sliderVol" value="3"></div><div class="slidev" id="vol-3"></div>
+                    </div>
+                </div>
+                
+                <!--  click assignment-->
+                <div class="box flex column center">
+                    <label for="bpm-ass-3">click assigned</label>
+                    <input type="radio" name="bpm" id="bpm-ass-3">
+                </div> 
+                
+<!--                  edit options box-->
+                <div class="box rightal flex column center spaced end-align" id="shift">
+                    <fieldset id="shift">
+                        <legend class="font1">Shift bins: </legend>
+                        <button class="shift" value="3" id="shiftl-3"><span class="ui-icon ui-icon-arrowthick-1-w"></span></button>
+                        <button class="shift" value="3" id="shiftr-3"><span class="ui-icon ui-icon-arrowthick-1-e"></span></button>
+                    </fieldset>
+                    <button class="resetButton rightal" id="resetButton-3" value="3">reset</button>
+                </div>
+                
+                <table class="pattern-matrix" id="pattern-3"></table>
+                
+            </div>
+            <div id="fragment-4">
+                                 <!--  Time signature melting type option-->
+                <div class="box flex column center">
+                    <fieldset class="checkbox1">
+                        <legend>Set time signatures melting type:</legend>
+                        <div class="melting" id="melt-4">
+                            <input type="radio" id="polyr-4" name="proj-4" checked="checked">
+                            <label for="polyr-4">Polyrythm</label>
+
+                            <input type="radio" id="polym-4" name="proj-4" >
+                            <label for="polym-4">Polymeter</label>
+                        </div>
+                    </fieldset>
+                </div> 
+                
+                <!--  time signature and minimum bin values-->
+                <div class="box flex column center spaced">
+                    <div class="">
+                        <label for="TS-4" >Time signature</label>
+                        <select class="timesig" id="TS-4">
+                        <option value="0" selected="selected">4/4</option>
+                        <option value="1">5/4</option>
+                        <option value="2">3/4</option>
+                        <option value="3">7/4</option>
+<!--                       <option value="4">7/8</option>-->
+                        </select>
+                    </div>
+                    <div class="">
+                        <label for="min-bin-4">Minimum note</label>
+                        <select class="timesig" id="min-bin-4">
+                            <option class="off-opt" value="0">1/32</option>
+                            <option value="1" selected="selected">1/16</option>
+                            <option value="2">1/8</option>
+                            <option class="off-opt" value="3">1/4</option>
+                        </select>
+                    </div>
+                </div> 
+                
+                <!--  gesture inputs and bin shifting-->
+                <div class="box flex column center spaced" style="width: 170">
+                    <div>
+                        <fieldset class="checkbox2">
+                            <legend class="font1">Gesture input</legend>
+                            <button class="gesture" id="armed-4">Arm</button>
+                        </fieldset>
+                    </div>
+                    <div class="maxwidth flex row center spaced">
+                        <div class="sliderVol" value="4"></div><div class="slidev" id="vol-4"></div>
+                    </div>
+                </div>
+                
+                <!--  click assignment-->
+                <div class="box flex column center">
+                    <label for="bpm-ass-4">click assigned</label>
+                    <input type="radio" name="bpm" id="bpm-ass-4">
+                </div> 
+                
+<!--                  edit options box-->
+                <div class="box rightal flex column center spaced end-align" id="shift">
+                    <fieldset id="shift">
+                        <legend class="font1">Shift bins: </legend>
+                        <button class="shift" value="4" id="shiftl-4"><span class="ui-icon ui-icon-arrowthick-1-w"></span></button>
+                        <button class="shift" value="4" id="shiftr-4"><span class="ui-icon ui-icon-arrowthick-1-e"></span></button>
+                    </fieldset>
+                    <button class="resetButton rightal" id="resetButton-4" value="4">reset</button>
+                </div>
+                
+                <table class="pattern-matrix" id="pattern-4"></table>
+            </div>
+            <div id="fragment-5">
+                                 <!--  Time signature melting type option-->
+                <div class="box flex column center">
+                    <fieldset class="checkbox1">
+                        <legend>Set time signatures melting type:</legend>
+                        <div class="melting" id="melt-5">
+                            <input type="radio" id="polyr-5" name="proj-5" checked="checked">
+                            <label for="polyr-5">Polyrythm</label>
+
+                            <input type="radio" id="polym-5" name="proj-5" >
+                            <label for="polym-5">Polymeter</label>
+                        </div>
+                    </fieldset>
+                </div> 
+                
+                <!--  time signature and minimum bin values-->
+                <div class="box flex column center spaced">
+                    <div class="">
+                        <label for="TS-5" >Time signature</label>
+                        <select class="timesig" id="TS-5">
+                        <option value="0" selected="selected">4/4</option>
+                        <option value="1">5/4</option>
+                        <option value="2">3/4</option>
+                        <option value="3">7/4</option>
+<!--                       <option value="4">7/8</option>-->
+                        </select>
+                    </div>
+                    <div class="">
+                        <label for="min-bin-5">Minimum note</label>
+                        <select class="timesig" id="min-bin-5">
+                            <option class="off-opt" value="0">1/32</option>
+                            <option value="1" selected="selected">1/16</option>
+                            <option value="2">1/8</option>
+                            <option class="off-opt" value="3">1/4</option>
+                        </select>
+                    </div>
+                </div> 
+                
+                <!--  gesture inputs and bin shifting-->
+                <div class="box flex column center spaced" style="width: 170">
+                    <div>
+                        <fieldset class="checkbox2">
+                            <legend class="font1">Gesture input</legend>
+                            <button class="gesture" id="armed-5">Arm</button>
+                        </fieldset>
+                    </div>
+                    <div class="maxwidth flex row center spaced">
+                        <div class="sliderVol" value="5"></div><div class="slidev" id="vol-5"></div>
+                    </div>
+                </div>
+                
+                <!--  click assignment-->
+                <div class="box flex column center">
+                    <label for="bpm-ass-5">click assigned</label>
+                    <input type="radio" name="bpm" id="bpm-ass-5">
+                </div> 
+                
+<!--                  edit options box-->
+                <div class="box rightal flex column center spaced end-align" id="shift">
+                    <fieldset id="shift">
+                        <legend class="font1">Shift bins: </legend>
+                        <button class="shift" value="5" id="shiftl-5"><span class="ui-icon ui-icon-arrowthick-1-w"></span></button>
+                        <button class="shift" value="5" id="shiftr-5"><span class="ui-icon ui-icon-arrowthick-1-e"></span></button>
+                    </fieldset>
+                    <button class="resetButton rightal" id="resetButton-5" value="5">reset</button>
+                </div>
+                
+                <table class="pattern-matrix" id="pattern-5"></table>
+                
+            </div>
+            <div id="fragment-6">
+                                 <!--  Time signature melting type option-->
+                <div class="box flex column center">
+                    <fieldset class="checkbox1">
+                        <legend>Set time signatures melting type:</legend>
+                        <div class="melting" id="melt-6">
+                            <input type="radio" id="polyr-6" name="proj-6" checked="checked">
+                            <label for="polyr-6">Polyrythm</label>
+
+                            <input type="radio" id="polym-6" name="proj-6" >
+                            <label for="polym-6">Polymeter</label>
+                        </div>
+                    </fieldset>
+                </div> 
+                
+                <!--  time signature and minimum bin values-->
+                <div class="box flex column center spaced">
+                    <div class="">
+                        <label for="TS-6" >Time signature</label>
+                        <select class="timesig" id="TS-6">
+                        <option value="0" selected="selected">4/4</option>
+                        <option value="1">5/4</option>
+                        <option value="2">3/4</option>
+                        <option value="3">7/4</option>
+<!--                       <option value="4">7/8</option>-->
+                        </select>
+                    </div>
+                    <div class="">
+                        <label for="min-bin-6">Minimum note</label>
+                        <select class="timesig" id="min-bin-6">
+                            <option class="off-opt" value="0">1/32</option>
+                            <option value="1" selected="selected">1/16</option>
+                            <option value="2">1/8</option>
+                            <option class="off-opt" value="3">1/4</option>
+                        </select>
+                    </div>
+                </div> 
+                
+                <!--  gesture inputs and bin shifting-->
+                <div class="box flex column center spaced" style="width: 170">
+                    <div>
+                        <fieldset class="checkbox2">
+                            <legend class="font1">Gesture input</legend>
+                            <button class="gesture" id="armed-6">Arm</button>
+                        </fieldset>
+                    </div>
+                    <div class="maxwidth flex row center spaced">
+                        <div class="sliderVol" value="6"></div><div class="slidev" id="vol-6"></div>
+                    </div>
+                </div>
+                
+                <!--  click assignment-->
+                <div class="box flex column center">
+                    <label for="bpm-ass-6">click assigned</label>
+                    <input type="radio" name="bpm" id="bpm-ass-6">
+                </div> 
+                
+                 <!-- edit options box-->
+                <div class="box rightal flex column center spaced end-align" id="shift">
+                    <fieldset id="shift">
+                        <legend class="font1">Shift bins: </legend>
+                        <button class="shift" value="6" id="shiftl-6"><span class="ui-icon ui-icon-arrowthick-1-w"></span></button>
+                        <button class="shift" value="6" id="shiftr-6"><span class="ui-icon ui-icon-arrowthick-1-e"></span></button>
+                    </fieldset>
+                    <button class="resetButton rightal" id="resetButton-6" value="6">reset</button>
+                </div>
+                
+                <table class="pattern-matrix" id="pattern-6"></table>
+                
+            </div>
+            <ul class="parts">
+                <li class="part-box"><a id="part-lab" href="#fragment-1"><span>Bass Drum</span></a></li>
+                <li class="part-box"><a id="part-lab" href="#fragment-2"><span>Snare Drum</span></a></li>
+                <li class="part-box"><a id="part-lab" href="#fragment-3"><span>Closed HiHat</span></a></li>
+                <li class="part-box"><a id="part-lab" href="#fragment-4"><span>Opened HiHat</span></a></li>
+                <li class="part-box"><a id="part-lab" href="#fragment-5"><span>Mid Tom</span></a></li>
+                <li class="part-box"><a id="part-lab" href="#fragment-6"><span>Floor Tom</span></a></li>
+            </ul>
+        </div>
+        
+        
+<!--        VISUALISATION -->     
+  
+<!--
+    <div class="navbar"><span>Real-Time Chart with Plotly.js</span></div>
+    <div class="wrapper">
+        <div id="chart"></div>
+        <script>
+  
+             function getDatax() {
+                return varx;
+            }  
+            Plotly.plot('chart',[{
+                y:[getDatax()],
+            
+                type:'line'
+            }]);
+            
+            var cnt = 0;
+            setInterval(function(){
+                Plotly.extendTraces('chart',{ y:[[getDatax()]]}, [0]);
+                cnt++;
+                if(cnt > 500) {
+                    Plotly.relayout('chart',{
+                        xaxis: {
+                            range: [cnt-500,cnt]
+                        }
+                    });
+                }
+            },15);
+        </script>
+    </div>
+-->
+
+    
+
+
+    </div>
+    
+</body>
+
+</html>
