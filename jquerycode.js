@@ -2,7 +2,7 @@ $(function() {
     //BUTTONS
     $("#clickon").button();
     $("#clickon").width(80);
-    $( "#clickon" ).click(function() {
+    $("#clickon").click(function() {
         if ($(this).hasClass("ui-state-active")){
             $(this).removeClass("ui-state-active");
             $(this).addClass("ui-state-default");
@@ -38,10 +38,23 @@ $(function() {
         }      
     });
     
+    $(".min-bins").button();
+    $(".min-bins").click(function() {  });
+    
+    $(".sel-bins").button();
+    
     $(".shift").button();
     
     $("#searchButton").button();
     $(".periodbutt").button();
+    
+    $(".tabs-sel").button();
+    $(".tabs-sel").width(120);
+    for ( o = 1; o < 7; o ++) {
+        $("#btab-"+o).click(function() {
+            $( "#tabs" ).tabs( "option", "active", $(this).val() );
+        })
+    }
     
     $(".gesture").button();
     $(".gesture").width(66);
@@ -81,7 +94,11 @@ $(function() {
             $( "#bpm" ).text(selection+" bpm");
         },
         change: function( event, ui ) {
-            setTimebase(beat[bpmChecked]);
+            if ($("#click-A").prop('checked')){
+                setTimebase(getBeatNum("x"));
+            }else{
+                setTimebase(getBeatNum("y"));
+            }
             setTime(0);
             updateTimes();
             if (running){ mainStop(); mainPlay(); }
@@ -133,11 +150,12 @@ $(function() {
     });
     
     $( "#accordion" ).accordion({
+        width: 250,
         collapsible: true,
         active: false
     });
-    
-    $(".accordion-butt").click(function() {
+    $( ".accordion-butt").click(function() {
+        
         if ($( this ).hasClass( "ui-state-active" )) {
             read_active=true;
             read();
@@ -148,8 +166,13 @@ $(function() {
     
     $( "#tabs" ).tabs();
     
-    $( ".melting" ).controlgroup();
-    $( ".melting" ).controlgroup("disable");
+    $( ".click-ass" ).controlgroup();
+    $('#click-A').prop('checked', true);
+    
+    $( ".sig-ass" ).controlgroup();
+    for ( o = 1; o < 7; o ++) {
+        $("#ass-A"+o).prop('checked', true);
+    }
     
     $( ".timesig" ).selectmenu({
         width: 100
@@ -160,68 +183,66 @@ $(function() {
     $( "input[type='radio']" ).checkboxradio();
     $( "#bpm-ass-1" ).prop('checked', true);
     $( "input[type='radio']" ).checkboxradio("refresh");
-
-    $( ".selector" ).checkboxradio( "refresh" );
     
     //FUNCTIONS    
-    $("#learn").click(function() {
-        $( this ).toggleClass( "ui-state-active" );
-        $( this ).empty();
-        var selection = $('input[name=radio-1]:checked').val();
-        
-        if ($( this ).hasClass( "ui-state-active" )) {
-            $( "input[name=radio-1]" ).checkboxradio( "disable" );
-            $( this ).text(" ");
-            $( this ).append( "<span class='ui-icon ui-icon-stop'></span>");
-            $( this ).append(" Stop learning");
-            switch (selection){
-            case "1":
-                learnks();
-                break;
-            case "2":
-                learnduo();
-                break;
-            case "3":
-                learntre();
-                break;                
-            }
-        }else{
-            $( "input[name=radio-1]" ).checkboxradio( "enable" );
-            $( this ).text(" ");
-            $( this ).append( "<span class='ui-icon ui-icon-play'></span>");
-            $( this ).append(" Start learning");
-            switch (selection){
-            case "1":
-                stopks();
-                break;
-            case "2":
-                stoptoms();
-                break;
-            case "3":
-                stoplearnhats();
-                break;                
-            }   
-        }
-    }); //deprecated
+//    $("#learn").click(function() {
+//        $( this ).toggleClass( "ui-state-active" );
+//        $( this ).empty();
+//        var selection = $('input[name=radio-1]:checked').val();
+//        
+//        if ($( this ).hasClass( "ui-state-active" )) {
+//            $( "input[name=radio-1]" ).checkboxradio( "disable" );
+//            $( this ).text(" ");
+//            $( this ).append( "<span class='ui-icon ui-icon-stop'></span>");
+//            $( this ).append(" Stop learning");
+//            switch (selection){
+//            case "1":
+//                learnks();
+//                break;
+//            case "2":
+//                learnduo();
+//                break;
+//            case "3":
+//                learntre();
+//                break;                
+//            }
+//        }else{
+//            $( "input[name=radio-1]" ).checkboxradio( "enable" );
+//            $( this ).text(" ");
+//            $( this ).append( "<span class='ui-icon ui-icon-play'></span>");
+//            $( this ).append(" Start learning");
+//            switch (selection){
+//            case "1":
+//                stopks();
+//                break;
+//            case "2":
+//                stoptoms();
+//                break;
+//            case "3":
+//                stoplearnhats();
+//                break;                
+//            }   
+//        }
+//    }); //deprecated
     
-    $( "#opener" ).click(function() {
-        var selection = $('input[name=radio-1]:checked').val();
-        switch (selection){
-            case "1":
-                $( "#dialog1" ).dialog( "open" );
-                break;
-            case "2":
-                $( "#dialog2" ).dialog( "open" );
-                break;
-            case "3":
-                $( "#dialog3" ).dialog( "open" );
-                break;                
-        }
-    }); //deprecated
+//    $( "#opener" ).click(function() {
+//        var selection = $('input[name=radio-1]:checked').val();
+//        switch (selection){
+//            case "1":
+//                $( "#dialog1" ).dialog( "open" );
+//                break;
+//            case "2":
+//                $( "#dialog2" ).dialog( "open" );
+//                break;
+//            case "3":
+//                $( "#dialog3" ).dialog( "open" );
+//                break;                
+//        }
+//    }); //deprecated
     
     //OTHER - all //deprecated
-    $( "#dialog1" ).dialog({ autoOpen: false });
-    $( "#dialog2" ).dialog({ autoOpen: false });
-    $( "#dialog3" ).dialog({ autoOpen: false });
+//    $( "#dialog1" ).dialog({ autoOpen: false });
+//    $( "#dialog2" ).dialog({ autoOpen: false });
+//    $( "#dialog3" ).dialog({ autoOpen: false });
     
 });

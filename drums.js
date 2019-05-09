@@ -8,6 +8,10 @@ var volume=[];
 var mainpause;
 var pause=[];
 
+var click_beats;
+var click_time;
+var click_index=0;
+
 //var polycycle;
 //var polyindex;
 
@@ -67,8 +71,6 @@ function playloop(part,click) {
         part.index += 1;
     }
     
-//    console.log(part.index);
-    
     // related to array bins
     if ( part.array[part.index]==true ){
         putActive(part.index,part.reference);
@@ -78,15 +80,33 @@ function playloop(part,click) {
         putActive(part.index,part.reference);
     }
     // related to click
-    if (click && activeClick){
-        if (!(part.index % (size[part.reference]/beat[part.reference]))){
-            sound[10].volume(volumeClick);
-            sound[10].play();
-        }
-    }
-    
-    
+//    if (click && activeClick){
+//        if (!(part.index % (size[part.reference]/beat[part.reference]))){
+//            sound[10].volume(volumeClick);
+//            sound[10].play();
+//        }
+//    }
 };
+function renew_click(){
+    if ($("#click-A").prop("checked")){
+        click_beats=getBeatNum("x");
+    }else{
+        click_beats=getBeatNum("y");
+    }
+    click_time=barTime/click_beats;
+}
+
+function playclick() {
+    
+    if (click_index < click_beats-1){
+        click_index += 1;
+        click_pause = setTimeout(playclick,click_time);
+    }
+    if (activeClick){
+        sound[10].volume(volumeClick);
+        sound[10].play();
+    }
+}
 
 
 function mainPlay(){
@@ -94,14 +114,11 @@ function mainPlay(){
     running=true;
     
     for (i=1; i<7; i++){
-        if (i==bpmChecked){
-            part[i].index=-1;
-            playloop(part[i],true);
-        }else{
-            part[i].index=-1;
-            playloop(part[i],false);
-        }
+        click_index=0;
+        part[i].index=-1;
+        playloop(part[i]);
     }
+    playclick();
     mainpause = setTimeout(mainPlay,barTime);
 }
 
@@ -111,29 +128,12 @@ function mainStop(){
         clearTimeout(pause[i]);
         part[i].index=0;
     }
+    click_index=0;
+    clearTimeout(click_pause);
     clearTimeout(mainpause);
 }
 
-//function lcm( First_number,  Second_number) {
-//    var x,max,min,lcm;
-//    if(First_number>Second_number){
-//        max=First_number;
-//        min=Second_number;
-//    }
-//    else
-//    {
-//        max=Second_number;
-//        min=First_number;
-//    }
-//    for(var i = 1; i <= min; i++){
-//        x = max * i; 
-//        if(x%min==0) {
-//            lcm = x; 
-//            break; 
-//        }
-//    }
-//    return lcm;
-//}
+
 //
 //function polyreset(){
 //    if (flag[2]===1){

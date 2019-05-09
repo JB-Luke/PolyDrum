@@ -5,6 +5,8 @@ var running = false;
 var beatBins=[];
 var beat=[];
 var size=[];
+var tatum;
+var subd1, subd2;
 
 var bpm;
 var bpmChecked; //bpm checked loop reference
@@ -102,10 +104,19 @@ function armRemover(matrix) {
 function TSchange(matrix){ 
     
     //get beats number for each measure
-    beat[matrix] = getBeatNum(matrix);
+    if ($("#ass-A"+matrix).prop('checked')){
+        beat[matrix] = getBeatNum("x");
+    }else{
+        beat[matrix] = getBeatNum("y");
+    }
     
     //get bins number for each beat of the measure
-    beatBins[matrix] = getBinsNum(matrix);
+    tatum=lcm(getBeatNum("x"),getBeatNum("y"));
+    if  (tatum<=7){
+         beatBins[matrix] = beat[matrix];
+    }else{
+        beatBins[matrix] = tatum/beat[matrix];
+    }
     
     //get the complete number of bins of the measure
     size[matrix] = beat[matrix]*beatBins[matrix];
@@ -113,13 +124,11 @@ function TSchange(matrix){
     //generate the matrix
     tableGen(matrix);
     
-//    indexreset(0); //restart loops //deprecated
-    
-//    polyreset(); //deprecated
 }
 
-function getBeatNum(matrix){
-    var datats = $( "#TS-"+matrix).val();
+function getBeatNum(signature){
+    
+    var datats = $( "#TS-"+signature).val();
     var beats;
     
      switch(datats) {
@@ -143,6 +152,7 @@ function getBeatNum(matrix){
             flag = 1 ;
             beats = 7;
         break;
+        case "5":
             flag = 1 ;
             beats = 6;
         break;
@@ -217,7 +227,7 @@ function ClickArming(cell,matrix,index) {
         if (!isArmed) {
             this.classList.remove("notArmed");
             this.classList.add("armed");
-            part[matrix].array[index]=1
+            part[matrix].array[index]=1;
         }else{
             this.classList.remove("armed");
             this.classList.add("notArmed");
@@ -225,6 +235,15 @@ function ClickArming(cell,matrix,index) {
         }
     });
 } 
+
+function tatumGen(){
+    $( ".min-bins" ).text(" ");
+    if (tatum<=7){
+        $( ".min-bins" ).append("(1/"+Math.pow(tatum, 2)+")");
+    }else{
+        $( ".min-bins" ).append("tatum (1/"+tatum+")");
+    }
+}
 
 function setTimebase(beats) { 
     var bpm = $( "#slider1" ).slider( "value" );
@@ -260,13 +279,16 @@ $(document).ready(function(){
     
     rollTSchange();    
     
-    //generate timebase referring to the initial click assignment (bass drum)
-    setTimebase(getBeatNum(1));
+    //generate timebase referring to the initial click assignment (time signature A)
+    setTimebase(getBeatNum("x"));
     setTime(0);
     
     //set the array length of all the arrays
     resetArray(0);
     updateTimes();
+    renew_click();
+    
+    tatumGen();
     
     for ( i = 1; i < 7; i ++) {
         
@@ -275,6 +297,7 @@ $(document).ready(function(){
             part[$(this).val()].array.push(bin);
             refreshGraphics($(this).val()); 
         });
+        
         $("#shiftr-"+i).on( "click", function(event) { 
             var bin=part[$(this).val()].array.pop();
             part[$(this).val()].array.unshift(bin);
@@ -283,26 +306,44 @@ $(document).ready(function(){
         
         $("#resetButton-"+i).on( "click", function(event) { reset($(this).val()); });
         
-        if ($("#bpm-ass-"+i).prop("checked")){
-            //get the new table reference for the bm assign 
-            bpmChecked=i;
-        }
-
-        //on Time Signature menu changes
-        $( "#TS-"+i).data("index",i);
-        $( "#TS-"+i).on( "selectmenuchange", function( event, ui ) {
-            var index = $(this).data("index");
-            TSchange(index);
-            if ($("#bpm-ass-"+index).prop("checked")){ 
-                setTimebase(beat[index]);
-                setTime(0); 
-                
-            }else{
-                setTime(index);
+//        $( "#sig-"+i).on( "selectmenuchange", function( event, ui ) {
+//            var index = $(this).data("index");
+//            TSchange(index);
+//            if ($("#bpm-ass-"+index).prop("checked")){ 
+//                setTimebase(beat[index]);
+//                setTime(0); 
+//                
+//            }else{
+//                setTime(index);
+//            }
+//            //array edits
+//            reset(index);
+//            updateTimes();
+//            if (running){ mainStop(); mainPlay(); }
+//        });
+        
+        $("#min-bin-"+i).click(function(){
+            
+        });
+        
+        $("#sel-bins-"+i).click(function(){
+            console.log($(this).val());
+            for(o = 0; o < size[$(this).val()]; o++){
+                if(!(o % (size[$(this).val()]/beat[$(this).val()]))){
+                    part[$(this).val()].array[o]=1;
+                }
             }
-            //array edits
-            reset(index);
-            updateTimes();
+            refreshGraphics($(this).val());
+        });
+        
+//        if (!(part.index % (size[part.reference]/beat[part.reference]))){
+//            sound[10].volume(volumeClick);
+//            sound[10].play();
+//        }
+        
+        $("input[name='ctrl-"+i+"']").change(function(){
+            TSchange($(this).val());
+            refreshGraphics($(this).val());
             if (running){ mainStop(); mainPlay(); }
         });
         
@@ -318,19 +359,71 @@ $(document).ready(function(){
         });
     };
     
-    //on bpm assignment changes
-    $( "input[type='radio']" ).change(function() { 
-        for ( i = 1; i < 7; i ++) {
-            if ($("#bpm-ass-"+i).prop("checked")){
-                //get the new table reference for the bm assign 
-                bpmChecked=i;
-            }
-        }
-        //renew bar time and bins time of each table
-        setTimebase(beat[bpmChecked]);
+    
+//    $( "input[type='radio']" ).change(function() { 
+//        for ( i = 1; i < 7; i ++) {
+//            if ($("#click-A").prop("checked")){
+//                 //renew bar time and bins time of each table
+//                setTimebase(getBeatNum("x"));
+//            }else{
+//                setTimebase(getBeatNum("y"));
+//            }
+//        }
+//        rollTSchange();
+//        setTime(0);
+//        updateTimes(); 
+//        if (running){ mainStop(); mainPlay(); }
+//    });
+    
+    //on Time Signature menu changes
+    $( "#TS-x").on( "selectmenuchange", function( event, ui ) {
+        rollTSchange();
         setTime(0);
+        //array edits
+        reset(0);
         updateTimes();
+        renew_click();
+        tatumGen();
+        if (running){ mainStop(); mainPlay(); }
+    });
+    
+    $( "#TS-y").on( "selectmenuchange", function( event, ui ) {
+        rollTSchange();
+        setTime(0);
+        //array edits
+        reset(0);
+        updateTimes();
+        renew_click();
+        tatumGen();
+        if (running){ mainStop(); mainPlay(); }
+    });
+    
+    //on radio buttons changes
+    $("input[name='proj-1']").change(function(){
+        renew_click();
         if (running){ mainStop(); mainPlay(); }
     });
         
 });
+
+//Utilities
+function lcm( First_number,  Second_number) {
+    var x,max,min,lcm;
+    if(First_number>Second_number){
+        max=First_number;
+        min=Second_number;
+    }
+    else
+    {
+        max=Second_number;
+        min=First_number;
+    }
+    for(var i = 1; i <= min; i++){
+        x = max * i; 
+        if(x%min==0) {
+            lcm = x; 
+            break; 
+        }
+    }
+    return lcm;
+}
