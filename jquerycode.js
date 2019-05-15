@@ -100,6 +100,7 @@ $(function() {
                 setTimebase(getBeatNum("y"));
             }
             setTime(0);
+            renew_click();
             updateTimes();
             if (running){ mainStop(); mainPlay(); }
         }

@@ -378,6 +378,7 @@ $(document).ready(function(){
     //on Time Signature menu changes
     $( "#TS-x").on( "selectmenuchange", function( event, ui ) {
         rollTSchange();
+        setTimebase(getBeatNum("x"));
         setTime(0);
         //array edits
         reset(0);
@@ -389,6 +390,7 @@ $(document).ready(function(){
     
     $( "#TS-y").on( "selectmenuchange", function( event, ui ) {
         rollTSchange();
+        setTimebase(getBeatNum("y"));
         setTime(0);
         //array edits
         reset(0);
